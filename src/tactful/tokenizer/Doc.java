@@ -10,7 +10,8 @@ import java.util.ArrayList;
 //A document represents the input text. It holds a list of fragments generated
 //from the text.
 public class Doc {
-	public ArrayList<Frag> frags;
+
+	ArrayList<Frag> frags = new ArrayList<Frag>();
 
 	// # Receives a text, which is then broken into fragments.
 	// # A fragment ends with a period, quesetion mark, or exclamation mark
@@ -31,18 +32,29 @@ public class Doc {
 			in = new BufferedReader(new StringReader(text));
 			while (in.ready()) {
 				String line = in.readLine();
+
 				if (line != null) {
-					String[] res = line
-							.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
+					
+					//String[] res = line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
+					String[] res = line.split("(?<=[.!?])\\s+");
+					
 					for (String string : res) {
-						Frag frag = new Frag(string);
-						if (frags != null || !frags.equals("")) {
+						
+					   if (string.trim() == "" || string.trim() == " ")
+						   continue;
+					   
+					   Frag frag = new Frag(string);
+					   frags.add(frag);
+					   
+					   if (frags != null ) {
 							frags.get(frags.size() - 1).setNext(
 									frag.getCleaned()[0]);
 						}
-						frags.add(frag);
+
 					}
+					
 				}
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
