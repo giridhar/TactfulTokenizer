@@ -3,16 +3,20 @@ package tactful.tokenizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import model.LowerWordsModel;
+
 public class Model {
 	private HashMap<String, Float> feats;
 	private HashMap<String, Float> lower_words;
 	private HashMap<String, Float> non_abbrs;
 	private double p0;
+	
+	//public Model(){}
 
 	// Initialize the model. feats, lower_words, and non_abbrs
 	// indicate the locations of the respective Marshal dumps.
 	public Model(HashMap<String, Float> feats,
-			HashMap<String, Float> lower_words, HashMap<String, Float> non_abbrs) {
+		HashMap<String, Float> lower_words, HashMap<String, Float> non_abbrs) {
 		this.feats = feats;
 		this.lower_words = lower_words;
 		this.non_abbrs = non_abbrs;
@@ -23,12 +27,18 @@ public class Model {
 		return feats;
 	}
 
-	public HashMap<String, Float> getLower_words() {
-		return lower_words;
+	// Returning score for lower words directly from LowerWordsModel...
+	public String getLower_words(String string) {
+		
+		String result = LowerWordsModel.getScoreForLowerWord(string);
+		return result;
 	}
-
-	public HashMap<String, Float> getNon_abbrs() {
-		return non_abbrs;
+	
+	//Getting Score Directly from NonAbbrsModel for given word..
+	public String getNon_abbrs(String string) {
+		
+		String result = NonAbbrsModel.getScoreForNonAbbrs(string);
+		return result;
 	}
 
 	public String[] tokenize_text(String text) {
@@ -37,10 +47,22 @@ public class Model {
 		classify(data);
 		return data.segment();
 	}
-
+	
+	//this method will score pred(inside Frag) by taking values from features.
 	private void classify(Doc data) {
-		// TODO Auto-generated method stub
-
+		double probs = (Double) null ;
+		HashMap<String, Float> feats = null;
+		
+		for(Frag frag : data.frags){
+			probs = p0;
+			
+			for(String feat:frag.features){
+				probs = feats.get(feat);
+			}
+			
+			frag.pred = (float) (probs / (probs + 1 )) ;			
+		}
+		
 	}
 
 	private void featurize(Doc data) {
@@ -60,24 +82,32 @@ public class Model {
 	// # * both: w1 and w2 taken together.
 	// # * w1abbr: logarithmic count of w1 occuring without a period.
 	// # * w2lower: logarithmiccount of w2 occuring lowercased.
-	private void get_features(Frag frag, Model model) {
-//w1 = (frag.cleaned.last or '')
-//        w2 = (frag.next or '')
-//
-//        frag.features = ["w1_#{w1}", "w2_#{w2}", "both_#{w1}_#{w2}"]
-//
-//        if not w2.empty?
-//            if w1.chop.is_alphabetic? 
-//                frag.features.push "w1length_#{[10, w1.length].min}", "w1abbr_#{model.non_abbrs[w1.chop]}"
-//            end
-//
-//            if w2.chop.is_alphabetic?
-//                frag.features.push "w2cap_#{w2[0].chr.is_upper_case?}", "w2lower_#{model.lower_words[w2.downcase]}"
-//            end
-//        end
-//		w1 = (frag.getCleaned() or '')
+	public void get_features(Frag frag, Model model) {
+		int cleaned_length = frag.cleaned.length;
+		String w1 = frag.cleaned[cleaned_length];
+		String w2 = frag.getNext();
+	
+	//	String[] features = {"w1_"+w1,"w2_"+w2, "both_"+w1+""+w2};
+	//	frag.setFeatures(features);
+		ArrayList<String> features = null;
+		features.add("w1_"+w1);
+		features.add("w2_"+w2);
+		features.add("both_"+w1+""+w2);
+		frag.setFeatures(features);
 		
-		
-	}
+		while(w2 != null){
+			
+			if(w1.substring(w1.length() - 1).contains("\\d+")){			
+				frag.features.add("w1length_"+Math.min(10,w1.length()));
+				frag.features.add("w1abbr_"+model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );
+			}	
+			
+			if(! w2.substring(0, w2.length()-1).contains("\\d+")){
+				frag.features.add("w2cap_"+Character.isUpperCase(w2.charAt(0)));
+				frag.features.add("w2lower_"+model.getLower_words(w2.toLowerCase()));				
+			}
+		}		
 
+	
+	}
 }

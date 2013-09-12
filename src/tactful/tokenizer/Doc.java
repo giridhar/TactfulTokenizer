@@ -3,6 +3,7 @@ package tactful.tokenizer;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,7 +26,9 @@ public class Doc {
 
 		BufferedReader in;
 		try {
-			in = new BufferedReader(new FileReader(text));
+			/* Replacing FileReader with StringReader as 
+			 *  Filereader takes path of file as String, and we have text(String which needs sentence segmentation) */
+			in = new BufferedReader(new StringReader(text));
 			while (in.ready()) {
 				String line = in.readLine();
 				if (line != null) {
