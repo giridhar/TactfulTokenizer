@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TactfulTokenizer">
+    <target name="createAndroidTestFileJar" description="Package the project and maket to a jar">
+        <jar jarfile="../TactfulTokenizer/dist/TactfulTokenizer.jar" basedir="bin/" includes="**/*.class">
+        	<fileset dir="src"/>
+        </jar>
+     </target>
+</project>
