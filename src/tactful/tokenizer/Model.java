@@ -87,8 +87,8 @@ public class Model {
 
 	private void featurize(Doc data) throws IOException {
 		//frag = nil
-		ArrayList<Frag> frags = (ArrayList<Frag>) data.frags;
-		for(Frag frag:frags){
+		ArrayList<Frag> frags = (ArrayList<Frag>) data.frags;		
+		for(Frag frag:frags){			
 			get_features(frag, this);
 		}
 		
@@ -115,15 +115,8 @@ public class Model {
 		features.add("w2_"+w2);
 		features.add("both_"+w1+"_"+w2);
 		frag.setFeatures(features);	
-		/*System.out.println("added element + "+features.get(i));
-		System.out.println("Original Statement...."+frag.getOrig());
-		System.out.println("Next Sttt..."+frag.getNext());
-		String[] ar = frag.getCleaned();
-		for(String p:ar)
-			System.out.println("Cleanee...."+p);
-		i++; */
 
-		if(! w2.isEmpty()){			
+		if( w2!=null && !w2.isEmpty()){			
 			if(! w1.substring(0,w1.length() - 1).matches(".*\\d+")){
 				frag.features.add("w1length_"+Math.min(10,w1.length()));
 				frag.features.add("w1abbr_"+model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );

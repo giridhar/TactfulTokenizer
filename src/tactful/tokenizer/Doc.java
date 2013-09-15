@@ -40,21 +40,21 @@ public class Doc {
 					
 					//String[] res = line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
 					String[] res = line.split("(?<=[.!?])\\s+");
-					
+
 					for (String string : res) {
 						
 					   if (string.trim() == "" || string.trim() == " ")
 						   continue;
 					   
 					   Frag frag = new Frag(string);
-					   		this.frags.add(frag);
 					   
 					   if ( ! frags.isEmpty() ) {
 						   frags.get(frags.size()-1).setNext(frag.getCleaned()[0]);
-						} 
-				
+					   }  					   
+					   this.frags.add(frag);
+		
 					}
-				}	
+				}
 			//} 	
 		}catch(Exception e) {
 			e.printStackTrace();
