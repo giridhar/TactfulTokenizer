@@ -1,6 +1,7 @@
 package tactful.tokenizer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //  # A fragment is a potential sentence, but is based only on the existence of a period.
 //    # The text "Here in the U.S. Senate we prefer to devour our friends." will be split
@@ -16,12 +17,11 @@ public class Frag extends WordTokenizer {
 	//
 
 	private String orig;
-	//making required instances as public so they can be access in other class..
 	public String[] cleaned;
 	private String next;
 	public float pred;
-       // public String[] features ;
-	ArrayList<String> features = new ArrayList<String>();
+//	public String[] features ;
+	List<String> features = new ArrayList<String>();
 	public String getNext() {
 		return next;
 	}
@@ -38,11 +38,11 @@ public class Frag extends WordTokenizer {
 		this.pred = pred;
 	}
 
-	public ArrayList<String> getFeatures() {
+	public List<String> getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(ArrayList<String> features) {
+	public void setFeatures(List<String> features) {
 		this.features = features;
 	}
 
@@ -63,7 +63,7 @@ public class Frag extends WordTokenizer {
 	// into an
 	// # array, because realistically only the last and first words are ever
 	// accessed.
-	public String[] clean(String string) {
+	public void clean(String string) {
 		string = tokenize(string);
 		string=string.replace("[.,\\d]*\\d", "<NUM>");
 		string=string.replace("[^\\p{Word}\\d\\s,!?.;:<>\\-'\\/$% ]", "");
