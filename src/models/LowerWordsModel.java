@@ -8,10 +8,10 @@ import java.io.InputStreamReader;
 
 public class LowerWordsModel {
 	
-	public  int getProbability(String lowerWord) throws IOException{
+	public static int getProbability(String lowerWord) throws IOException{
 		int prob = 0;
 		String data = "";
-		InputStream inputStream  =  getClass().getResourceAsStream("/data/lower_words.txt");
+		InputStream inputStream  =  LowerWordsModel.class.getResourceAsStream("/data/lower_words.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		data = br.readLine();
 		if(data != null){	

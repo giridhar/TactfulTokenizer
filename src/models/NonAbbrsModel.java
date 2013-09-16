@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 
 public class NonAbbrsModel {
 	
-	public  int getProbability(String nonAbbrWord) throws IOException{
+	public static int getProbability(String nonAbbrWord) throws IOException{
 		int prob = 0;
 		String data = "";
-		InputStream inputStream  =  getClass().getResourceAsStream("/data/non_abbrs.txt");
+		InputStream inputStream  =  NonAbbrsModel.class.getResourceAsStream("/data/non_abbrs.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		data = br.readLine();
 		if(data != null){

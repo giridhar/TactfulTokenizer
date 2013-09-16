@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 
 public class FeaturesModel {
 	
-	public  double getProbability(String lowerWord) throws IOException{
+	public static double getProbability(String lowerWord) throws IOException{
 		double prob = 0;
 		String data = "";
 		
-		InputStream inputStream  =  getClass().getResourceAsStream("/data/features.txt");
+		InputStream inputStream  = FeaturesModel.class.getResourceAsStream("/data/features.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		
 		while ((data = br.readLine()) != null) 
