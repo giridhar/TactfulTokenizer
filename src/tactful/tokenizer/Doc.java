@@ -9,9 +9,8 @@ import java.util.List;
 //from the text.
 public class Doc {
 
-	public List<Frag> frags = new ArrayList<Frag>() ;
-	
-	
+	public List<Frag> frags = new ArrayList<Frag>();
+
 	// # Receives a text, which is then broken into fragments.
 	// # A fragment ends with a period, quesetion mark, or exclamation mark
 	// followed
@@ -22,43 +21,43 @@ public class Doc {
 	// # No, it doesn't have a period, but that's the end of paragraph.
 	// #
 	// # Input assumption: Paragraphs delimited by line breaks.
-	//public Doc(){}
-		
+	// public Doc(){}
+
 	public Doc(String text) {
-		//can't initialize frags here with null it causes nullpointerexception...
-		//frags = null;
-		///BufferedReader in;
+		// can't initialize frags here with null it causes
+		// nullpointerexception...
+		// frags = null;
+		String line = null;
+		BufferedReader br;
 		try {
-			/* Replacing FileReader with StringReader as 
-			 *  Filereader takes path of file as String, and we have text(String which needs sentnce segmentation) */
-		// BufferedReader is not working comment it for now, needs to  find a alternate of Bufferedreader
-		//	in = new BufferedReader(new StringReader(text));
-			//while (in.ready()) {
-				String line = text;
+			/*
+			 * Replacing FileReader with StringReader as Filereader takes path
+			 * of file as String, and we have text(String which needs sentnce
+			 * segmentation)
+			 */
+			br = new BufferedReader(new StringReader(text));
+			while ((line = br.readLine()) != null) {
+			
+				//line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
+				String[] res = line.split("(?<=[.!?])\\s+");
 
-				if (line != null) {
-					
-					//String[] res = line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
-					String[] res = line.split("(?<=[.!?])\\s+");
+				for (String string : res) {
 
-					for (String string : res) {
-						
-					   if (string.trim() == "" || string.trim() == " ")
-						   continue;
-					   
-					   Frag frag = new Frag(string);
-					   
-					   if ( ! frags.isEmpty() ) {
-						   frags.get(frags.size()-1).setNext(frag.getCleaned()[0]);
-					   }  					   
-					   this.frags.add(frag);
-		
+					if (string.trim() == "" || string.trim() == " ")
+						continue;
+
+					Frag frag = new Frag(string);
+					if (!frags.isEmpty()) {
+						frags.get(frags.size() - 1).setNext(
+								frag.getCleaned()[0]);
 					}
+					this.frags.add(frag);
+
 				}
-			//} 	
-		}catch(Exception e) {
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 	}
 
 	// # Segments the text. More precisely, it reassembles the fragments into
@@ -66,20 +65,20 @@ public class Doc {
 	// # We call something a sentence whenever it is more likely to be a
 	// sentence than not.
 	public String[] segment() {
-		
+
 		ArrayList<String> sent = new ArrayList<String>();
 		ArrayList<String> sents = new ArrayList<String>();
 		float thresh = (float) 0.5;
 
 		for (Frag frag : frags) {
 			sent.add(frag.getOrig());
-	
+
 			if (frag.getPred() > thresh) {
 				if (frag.getOrig() == null)
-					break; 
-				String addall="";
-				for(String add:sent){
-					addall = addall+add+" ";
+					break;
+				String addall = "";
+				for (String add : sent) {
+					addall = addall + add + " ";
 				}
 				addall = addall.trim();
 				sents.add(addall);
@@ -87,16 +86,17 @@ public class Doc {
 			}
 		}
 
-		// (String[])sents.toArray(); this is not working so creating string array from arraylist...
+		// (String[])sents.toArray(); this is not working so creating string
+		// array from arraylist...
 		String[] sentences;
-		if (sents.size()>0){
+		if (sents.size() > 0) {
 			sentences = new String[sents.size()];
 			for (int i = 0; i < sents.size(); i++) {
 				sentences[i] = sents.get(i);
 			}
 		}
-		
-		else{
+
+		else {
 			sentences = new String[sent.size()];
 			for (int i = 0; i < sent.size(); i++) {
 				sentences[i] = sent.get(i);
