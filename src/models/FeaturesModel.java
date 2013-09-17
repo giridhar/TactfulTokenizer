@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 
 public class FeaturesModel {
 	
-	public static double getProbability(String lowerWord) throws IOException{
-		double prob = 0;
+	public static double getProbability(String lowerWord) throws IOException {
+		double prob = 1;
 		String data = "";
 		
 		InputStream inputStream  = FeaturesModel.class.getResourceAsStream("/data/features.txt");
