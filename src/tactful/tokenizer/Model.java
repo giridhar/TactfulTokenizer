@@ -72,8 +72,9 @@ public class Model {
 	 public static void main(String args[]) throws IOException{
 		Model model=new Model();
 		//String[] re = model.tokenize_text("this is u.s.a. please come home. where are you. This is meeting prep. for you.");
-		String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
+		//String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
 		//String[] re = model.tokenize_text("For more details or demo, call @ 0161 - 4682334, 45 (10am - 5pm, Mon-Fri)");
+		String[] re = model.tokenize_text("this is meeting prep. for you");
 		for(String print:re){
 			System.out.println(print);
 		}
@@ -83,16 +84,15 @@ public class Model {
 	
 	//this method will score pred(inside Frag) by taking values from features.
 	private void classify(Doc data) throws IOException {
-		System.out.println("size "+data.frags.size());
+
 		double probs  ;
 		int i=1;
 		for(Frag frag : data.frags){
 			probs = p0;
-			System.out.println("p) "+probs);
 			for(String feat:frag.features){		
 				
 				probs *= getFeats(feat); 
-				System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
+				//System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
 			}
 			//i = i+1;
 			frag.pred = (float) (probs / (probs + 1 )) ;	
