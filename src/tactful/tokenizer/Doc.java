@@ -66,28 +66,41 @@ public class Doc {
 	// # We call something a sentence whenever it is more likely to be a
 	// sentence than not.
 	public String[] segment() {
+		
 		ArrayList<String> sent = new ArrayList<String>();
 		ArrayList<String> sents = new ArrayList<String>();
 		float thresh = (float) 0.5;
-		int i=0;
-		String sentString;
+
 		for (Frag frag : frags) {
-			//sent.add(frag.getOrig());
-			//if (frag.getPred() > thresh) {
-			sentString = frag.getOrig();
-			//Will Replace ture with condition once database is ready.. 
-			if(true){
+			sent.add(frag.getOrig());
+	
+			if (frag.getPred() > thresh) {
 				if (frag.getOrig() == null)
-					break;
-				//sents.add(sent.toString());
-				sents.add(sentString);
+					break; 
+				String addall="";
+				for(String add:sent){
+					addall = addall+add+" ";
+				}
+				addall = addall.trim();
+				sents.add(addall);
 				sent = new ArrayList<String>();
 			}
 		}
+
 		// (String[])sents.toArray(); this is not working so creating string array from arraylist...
-		String[] sentences = new String[sents.size()];
-		for (int i1 = 0; i1 < sents.size(); i1++) {
-		    sentences[i1] = sents.get(i1);
+		String[] sentences;
+		if (sents.size()>0){
+			sentences = new String[sents.size()];
+			for (int i = 0; i < sents.size(); i++) {
+				sentences[i] = sents.get(i);
+			}
+		}
+		
+		else{
+			sentences = new String[sent.size()];
+			for (int i = 0; i < sent.size(); i++) {
+				sentences[i] = sent.get(i);
+			}
 		}
 		return sentences;
 	}
