@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import models.FeaturesModel;
 import models.LowerWordsModel;
@@ -19,7 +20,7 @@ public class Model {
 	
 	public Model() throws IOException{
 		FeaturesModel object = new FeaturesModel();
-		System.out.println("p0 value"+object.getProbability("<prior>"));
+		//System.out.println("p0 value"+object.getProbability("<prior>"));
 		this.p0 = Math.pow(object.getProbability("<prior>") , 4);
 	}
 
@@ -60,58 +61,51 @@ public class Model {
 	}
 
 	public String[] tokenize_text(String text) throws IOException {
-		System.out.println("Given text is = "+text);
+		//System.out.println("Given text is = "+text);
 		Doc data = new Doc(text);
 		featurize(data);
 		classify(data);
-		System.out.print("Response = ");
+		//System.out.print("Response = ");
 		return data.segment();
 	}
 	
 	//Created Main for testing will remove from final jar
 	 public static void main(String args[]) throws IOException{
 		Model model=new Model();
-		//String[] re = model.tokenize_text("this is u.s.a. please come home. where are you. This is meeting prep. for you.");
+		String[] re = model.tokenize_text("this is u.s.a. please come home! where are you? This is meeting prep. for you.");
+		//String[] re = model.tokenize_text("this is u.s.a. for you.");
 		//String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
-		//String[] re = model.tokenize_text("For more details or demo, call @ 0161 - 4682334, 45 (10am - 5pm, Mon-Fri)");
-		String[] re = model.tokenize_text("this is meeting prep. for you");
+		//Scanner sc=new Scanner(System.in);
+		//String input = sc.nextLine();
+		//String[] re = model.tokenize_text(input);
 		for(String print:re){
 			System.out.println(print);
 		}
-		//FeaturesModel obj = new FeaturesModel();
-		//System.out.println(obj.getProbability("w2_where"));
 	} 
 	
-	//this method will score pred(inside Frag) by taking values from features.
+	//this method will set score pred(probability of having sentance) from features model.
 	private void classify(Doc data) throws IOException {
-
+		
 		double probs  ;
 		int i=1;
 		for(Frag frag : data.frags){
 			probs = p0;
 			for(String feat:frag.features){		
-				
+
 				probs *= getFeats(feat); 
 				//System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
 			}
-			//i = i+1;
 			frag.pred = (float) (probs / (probs + 1 )) ;	
-
-		/*	if ( i%2 == 1)
-				 frag.pred = (float) 0.0;
-			else
-				 frag.pred = (float) 0.999403233859149; */
 		}
 	}
 
 	private void featurize(Doc data) throws IOException {
 		//frag = nil
 		ArrayList<Frag> frags = (ArrayList<Frag>) data.frags;
-		
+	
 		for(Frag frag:frags){
 			get_features(frag, this);
-		}
-		
+		}		
 	}
 	//# Finds the features in a text fragment of the form:
 	// # ... w1. (sb?) w2 ...
@@ -126,12 +120,15 @@ public class Model {
 		
 		String w1 = frag.cleaned[frag.cleaned.length-1];
 		String w2 = frag.getNext();
-
-	//	String[] features = {"w1_"+w1,"w2_"+w2, "both_"+w1+""+w2};
-	//	frag.setFeatures(features);
 		
 		List<String> features = new ArrayList<String>();
-		features.add("w1_"+w1);
+		if (w1 != null){
+			features.add("w1_"+w1);
+		}
+		else{
+			features.add("w1_");
+		}
+		
 		if ( w2 != null){
 		 features.add("w2_"+w2);
 		 features.add("both_"+w1+"_"+w2);
@@ -140,11 +137,12 @@ public class Model {
 		 features.add("w2_");
      	 features.add("both_"+w1+"_");
 		}
-		//frag.setFeatures(features);	
+			
 		frag.features.addAll(features);
 
 		if( w2!=null && !w2.isEmpty()){
-			if(! (w1.substring(0,w1.length() - 1).matches(".*\\d+"))){
+			//if(! (w1.substring(0,w1.length() - 1).matches(".*\\d+"))){
+			if((w1.substring(0,w1.length() - 1).matches("//.*[a-aA-Z]+"))){
 				frag.features.add("w1length_"+Math.min(10,w1.length()));
 				frag.features.add("w1abbr_"+model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );				
 			}	

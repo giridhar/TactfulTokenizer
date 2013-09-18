@@ -21,23 +21,14 @@ public class Doc {
 	// # No, it doesn't have a period, but that's the end of paragraph.
 	// #
 	// # Input assumption: Paragraphs delimited by line breaks.
-	// public Doc(){}
 
 	public Doc(String text) {
-		// can't initialize frags here with null it causes
-		// nullpointerexception...
-		// frags = null;
 		String line = null;
 		BufferedReader br;
 		try {
-			/*
-			 * Replacing FileReader with StringReader as Filereader takes path
-			 * of file as String, and we have text(String which needs sentnce
-			 * segmentation)
-			 */
+			// Creating Stream with BufferedReader to given Text..
 			br = new BufferedReader(new StringReader(text));
-			while ((line = br.readLine()) != null) {
-			
+			while ((line = br.readLine()) != null) {			
 				//line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
 				String[] res = line.split("(?<=[.!?])\\s+");
 
@@ -86,8 +77,8 @@ public class Doc {
 			}
 		}
 
-		// (String[])sents.toArray(); this is not working so creating string
-		// array from arraylist...
+		// (String[])sents.toArray(); this is not working 
+		//so here creating string array from arraylist...
 		String[] sentences;
 		if (sents.size() > 0) {
 			sentences = new String[sents.size()];
