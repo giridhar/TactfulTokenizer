@@ -49,20 +49,8 @@ public class WordTokenizer {
 	
 	public String tokenize(String s){
 		for(String[] tokenize_regexp:tokenize_regexps){
-			//System.out.println("string that causes error  "+s);
-			//System.out.println("regex 1   "+tokenize_regexp[0]+"regex 2   "+tokenize_regexp[1]);
-			System.out.println("s before "+s);
 			s=s.replaceAll(tokenize_regexp[0],tokenize_regexp[1]);
-			System.out.println("s after "+s);
 		}
 		return s;
-	}
-	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("please enter line to check replacement ");
-		String input = sc.nextLine();
-		input = input.replaceAll("(\\s|^)(,)(?=(\\S))", "$1$2 ");
-		System.out.println("After Replacement = "+input);
 	}
 }
