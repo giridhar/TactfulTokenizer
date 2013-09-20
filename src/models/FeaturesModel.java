@@ -21,7 +21,7 @@ public class FeaturesModel {
 				for (int i = 0; i < lwords.length; i++)
 				{
 				  String[] wordArray = lwords[i].split("\\|\\|");
-					if(lowerWord.equals(wordArray[0]))
+					if(lowerWord.equals(wordArray[0]) && wordArray.length > 1)
 					{
 						prob = 	Double.parseDouble(wordArray[1]);
 						return prob;
