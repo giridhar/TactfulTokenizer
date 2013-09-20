@@ -10,7 +10,7 @@ public class WordTokenizer {
 	        {"(^|\\s)(')", "$1$2"},  //Verified Working fine ..
 	        {"(?=[\\(\"`{\\[:;&#*@])(.)", "$1 "},  // Not sure what is supposed to do...
 			
-	        {"(?=[?!\\)\";}\\]*:@'])|(?=[\\)}\\]])(.)|(.)(?=[({\\[])|((^|\\s)-)(?=[^-])", "$1 "}, //Not sure what is supposed to do
+	        {"(.)(?=[?!\\)\";}\\]*:@'])|(?=[\\)}\\]])(.)|(.)(?=[({\\[])|((^|\\s)-)(?=[^-])", "$1 "}, //Working now will again check it...
 
 //	        # Treat double-hyphen as a single token.
 	        {"([^-])(--+)([^-])", "$1 $2 $3"}, //Verified Working...
@@ -52,5 +52,13 @@ public class WordTokenizer {
 			s=s.replaceAll(tokenize_regexp[0],tokenize_regexp[1]);
 		}
 		return s;
+	}
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("please enter line to check replacement ");
+		String input = sc.nextLine();
+		input = input.replaceAll("(?=[\\(\"`{\\[:;&#*@])(.)", "$1 ");
+		System.out.println("After Replacement = "+input);
 	}
 }

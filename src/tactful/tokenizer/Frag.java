@@ -65,19 +65,8 @@ public class Frag extends WordTokenizer {
 	// accessed.
 	public void clean(String string) {
 		string = tokenize(string);
-		//string=string.replace("[.,\\d]*\\d", "<NUM>");
 		string = string.replaceAll("[0-9]+/*\\.*[0-9]*", "<NUM>");
-		//string=string.replace("[^\\p{Word}\\d\\s,!?.;:<>\\-'\\/$% ]", "");
-		//Above Regex is not working so replacing text using contains....
-		//System.out.println("before "+string);
 		string = string.replaceAll("[!\\*=]", "");
-/*		if (string.contains("!") || string.contains("\"") || string.contains("*") || string.contains("=")){
-			string = string.replace("!","");
-			string = string.replace("=","");
-			string = string.replace("\\","");
-			string = string.replace("*","");
-		} */
-		//System.out.println("after "+string);
 		string=string.replace("--", " ");
 		cleaned= string.split(" ");
 	}

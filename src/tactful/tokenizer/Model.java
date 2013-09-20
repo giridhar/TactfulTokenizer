@@ -2,7 +2,6 @@ package tactful.tokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,71 +12,48 @@ import models.NonAbbrsModel;
 public class Model {
 	
 	private double p0;
-	/*private HashMap<String, Float> feats;
-	private HashMap<String, Float> lower_words;
-	private HashMap<String, Float> non_abbrs;
-	private double p0;*/
 	
 	public Model() throws IOException{
-		FeaturesModel object = new FeaturesModel();
-		//System.out.println("p0 value"+object.getProbability("<prior>"));
-		this.p0 = Math.pow(object.getProbability("<prior>") , 4);
+		this.p0 = Math.pow(FeaturesModel.getProbability("<prior>") , 4);
 	}
-
-   /*
-	// Initialize the model. feats, lower_words, and non_abbrs
-	// indicate the locations of the respective Marshal dumps.
-	public Model(HashMap<String, Float> feats,
-		HashMap<String, Float> lower_words, HashMap<String, Float> non_abbrs) {
-		this.feats = feats;
-		this.lower_words = lower_words;
-		this.non_abbrs = non_abbrs;
-		this.p0 = Math.pow(feats.get("<prior>"), 4);
-	}
-
-	public HashMap<String, Float> getFeats() {
-		return feats;
-	}  */
 
 	public static int getLower_words(String string) throws IOException {
-		LowerWordsModel object = new LowerWordsModel();
-		int result = object.getProbability(string);
+		int result = LowerWordsModel.getProbability(string);
 		return result;
 	}
 
-	//Getting Score Directly from NonAbbrsModel for given word..
 	public static int getNon_abbrs(String string) throws IOException {
-		NonAbbrsModel object = new NonAbbrsModel();
-		int result = object.getProbability(string);
+		int result = NonAbbrsModel.getProbability(string);
 		return result;
 	}
 	
 	public static double getFeats(String string) throws IOException{
-		
-		FeaturesModel object=new FeaturesModel();
-		double feat =  object.getProbability(string);
-		//System.out.println("last return "+feat+"for word "+string);
+		double feat =  FeaturesModel.getProbability(string);
 		return feat;
 	}
 
 	public String[] tokenize_text(String text) throws IOException {
-		//System.out.println("Given text is = "+text);
+		System.out.println("Given text is = "+text);
 		Doc data = new Doc(text);
 		featurize(data);
 		classify(data);
-		//System.out.print("Response = ");
+		System.out.print("Response = ");
 		return data.segment();
 	}
 	
 	//Created Main for testing will remove from final jar
 	 public static void main(String args[]) throws IOException{
 		Model model=new Model();
-		String[] re = model.tokenize_text("this is u.s.a. please come home! where are you? This is meeting prep. for you.");
+		//String[] re = model.tokenize_text("this is u.s.a. please come home! where are you? This is meeting prep. for you.");
 		//String[] re = model.tokenize_text("this is u.s.a. for you.");
 		//String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
-		//Scanner sc=new Scanner(System.in);
-		//String input = sc.nextLine();
-		//String[] re = model.tokenize_text(input);
+		//String[] re = model.tokenize_text("Rs. 109  Limited Time \nDomain Sale! Book Your Domain    And \nGet Online Today.");
+		//String[] re = model.tokenize_text("this is sumit. \n \n\n\n\n\n\n\n\n where are you.\n");
+		//String[] re = model.tokenize_text("this is sumit/..........  ..ahow are ......... adhsf");
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Please enter the Line to pass");
+		String input = sc.nextLine();
+		String[] re = model.tokenize_text(input);
 		for(String print:re){
 			System.out.println(print);
 		}
@@ -93,7 +69,6 @@ public class Model {
 			for(String feat:frag.features){		
 
 				probs *= getFeats(feat); 
-				//System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
 			}
 			frag.pred = (float) (probs / (probs + 1 )) ;	
 		}
@@ -115,7 +90,7 @@ public class Model {
 	// # * w1length: the number of alphabetic characters in w1.
 	// # * both: w1 and w2 taken together.
 	// # * w1abbr: logarithmic count of w1 occuring without a period.
-	// # * w2lower: logarithmiccount of w2 occuring lowercased.
+	// # * w2lower: logarithmic count of w2 occuring lowercased.
 	public void get_features(Frag frag, Model model) throws IOException {
 		
 		String w1 = frag.cleaned[frag.cleaned.length-1];
@@ -141,8 +116,7 @@ public class Model {
 		frag.features.addAll(features);
 
 		if( w2!=null && !w2.isEmpty()){
-			//if(! (w1.substring(0,w1.length() - 1).matches(".*\\d+"))){
-			if((w1.substring(0,w1.length() - 1).matches("//.*[a-aA-Z]+"))){
+			if((w1.substring(0,w1.length() - 1).matches("[a-zA-Z]+"))){
 				frag.features.add("w1length_"+Math.min(10,w1.length()));
 				frag.features.add("w1abbr_"+model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );				
 			}	

@@ -31,7 +31,6 @@ public class Doc {
 			while ((line = br.readLine()) != null) {			
 				//line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
 				String[] res = line.split("(?<=[.!?])\\s+");
-	
 				if(res.length > 0 ){
 					for (String string : res) {
 						string = string.replace("\\n","");
