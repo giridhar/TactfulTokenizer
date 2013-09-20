@@ -31,22 +31,25 @@ public class Doc {
 			while ((line = br.readLine()) != null) {			
 				//line.split("(.*?[.!?](?:[\"')\\]}]|(?:<.*>))*[\\s])");
 				String[] res = line.split("(?<=[.!?])\\s+");
+	
+				if(res.length > 0 ){
+					for (String string : res) {
+						string = string.replace("\\n","");
+						string = string.replaceAll("\\s+"," ");
+						
+						if (string.trim().equals("") || string.trim().equals(" "))
+							continue;
 
-				for (String string : res) {
-
-					if (string.trim() == "" || string.trim() == " ")
-						continue;
-
-					Frag frag = new Frag(string);
-					if (!frags.isEmpty()) {
-						frags.get(frags.size() - 1).setNext(
-								frag.getCleaned()[0]);
+						Frag frag = new Frag(string);
+						if (!frags.isEmpty()) {
+							frags.get(frags.size() - 1).setNext(
+									frag.getCleaned()[0]);
+						}
+						this.frags.add(frag);
 					}
-					this.frags.add(frag);
-
 				}
 			}
-		} catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
