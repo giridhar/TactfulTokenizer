@@ -34,13 +34,14 @@ public class Doc {
 				if(res.length > 0 ){
 					for (String string : res) {
 						string = string.replace("\\n","");
+						string = string.replace("\\r","");
 						string = string.replaceAll("\\s+"," ");
 						
 						if (string.trim().equals("") || string.trim().equals(" "))
 							continue;
 
 						Frag frag = new Frag(string);
-						if (!frags.isEmpty()) {
+						if (!frags.isEmpty() && frag.getCleaned().length > 0) {
 							frags.get(frags.size() - 1).setNext(
 									frag.getCleaned()[0]);
 						}

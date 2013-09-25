@@ -12,7 +12,7 @@ import models.NonAbbrsModel;
 public class Model {
 	
 	private double p0;
-	
+
 	public Model() throws IOException{
 		this.p0 = Math.pow(FeaturesModel.getProbability("<prior>") , 4);
 	}
@@ -37,7 +37,6 @@ public class Model {
 		Doc data = new Doc(text);
 		featurize(data);
 		classify(data);
-		System.out.print("Response = ");
 		return data.segment();
 	}
 	
@@ -47,13 +46,14 @@ public class Model {
 		//String[] re = model.tokenize_text("this is u.s.a. please come home! where are you? This is meeting prep. for you.");
 		//String[] re = model.tokenize_text("this is u.s.a. for you.");
 		//String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
-		//String[] re = model.tokenize_text("Rs. 109  Limited Time \nDomain Sale! Book Your Domain    And \nGet Online Today.");
-		//String[] re = model.tokenize_text("this is sumit. \n \n\n\n\n\n\n\n\n where are you.\n");
+		//String[] re = model.tokenize_text("Rs. 109\n\n  Limited Time \nDomain Sale! Book Your Domain    And \nGet Online Today.");
+		String[] re = model.tokenize_text("this is sumit. \n \n\n\n\n\n\n\n\n where are you.\n");
 		//String[] re = model.tokenize_text("this is sumit/..........  ..ahow are ......... adhsf");
-		Scanner sc=new Scanner(System.in);
+		//String[] re = model.tokenize_text("reQall, inc. is the name of the company.");
+		/*Scanner sc=new Scanner(System.in);
 		System.out.println("Please enter the Line to pass");
 		String input = sc.nextLine();
-		String[] re = model.tokenize_text(input);
+		String[] re = model.tokenize_text(input);*/
 		for(String print:re){
 			System.out.println(print);
 		}
@@ -63,21 +63,21 @@ public class Model {
 	private void classify(Doc data) throws IOException {
 		
 		double probs  ;
-		int i=1;
+		int i=0;
 		for(Frag frag : data.frags){
 			probs = p0;
 			for(String feat:frag.features){		
 
 				probs *= getFeats(feat); 
+				//System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
 			}
-			frag.pred = (float) (probs / (probs + 1 )) ;	
+				frag.pred = (float) (probs / (probs + 1)) ;	
 		}
 	}
 
 	private void featurize(Doc data) throws IOException {
 		//frag = nil
 		ArrayList<Frag> frags = (ArrayList<Frag>) data.frags;
-	
 		for(Frag frag:frags){
 			get_features(frag, this);
 		}		
@@ -118,12 +118,12 @@ public class Model {
 		if( w2!=null && !w2.isEmpty()){
 			if((w1.substring(0,w1.length() - 1).matches("[a-zA-Z]+"))){
 				frag.features.add("w1length_"+Math.min(10,w1.length()));
-				frag.features.add("w1abbr_"+model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );				
+				frag.features.add("w1abbr_"+Model.getNon_abbrs( w1.substring( 0 ,w1.length()-1) ) );	
 			}	
 			
 			if(! (w2.substring(0, w2.length()-1).matches(".*\\d+"))){
 				frag.features.add("w2cap_"+!Character.isUpperCase(w2.charAt(0)));
-				frag.features.add("w2lower_"+model.getLower_words(w2.toLowerCase()));				
+				frag.features.add("w2lower_"+Model.getLower_words(w2.toLowerCase()));				
 			}
 		}		
 	}
