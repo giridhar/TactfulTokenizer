@@ -3,6 +3,7 @@ package tactful.tokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import models.FeaturesModel;
@@ -12,24 +13,43 @@ import models.NonAbbrsModel;
 public class Model {
 	
 	private double p0;
-
+	private static Map< String,Integer> lower_words = null;
+	private static Map< String,Integer> non_abbrs = null;
+	private static Map< String,Double> features = null;
 	public Model() throws IOException{
-		this.p0 = Math.pow(FeaturesModel.getProbability("<prior>") , 4);
+		lower_words = LowerWordsModel.initialize();
+		non_abbrs = NonAbbrsModel.initialize();
+		features = FeaturesModel.initialize();
+		this.p0 = Math.pow(features.get("<prior>") , 4);
+		
 	}
 
+	
 	public static int getLower_words(String string) throws IOException {
-		int result = LowerWordsModel.getProbability(string);
-		return result;
+		Integer result =  new Integer(0);
+		result = lower_words.get(string);
+		if(result != null)
+		 return result;	
+		else
+			return 0;		
 	}
 
 	public static int getNon_abbrs(String string) throws IOException {
-		int result = NonAbbrsModel.getProbability(string);
-		return result;
+		Integer result =  new Integer(0);
+		result = non_abbrs.get(string);
+		if(result != null)
+		 return result;	
+		else
+			return 0;
 	}
 	
 	public static double getFeats(String string) throws IOException{
-		double feat =  FeaturesModel.getProbability(string);
-		return feat;
+		Double result =  new Double(0);
+		result = features.get(string);
+		if(result != null)
+		 return result;	
+		else
+			return 1;
 	}
 
 	public String[] tokenize_text(String text) throws IOException {
@@ -47,9 +67,7 @@ public class Model {
 		//String[] re = model.tokenize_text("this is u.s.a. for you.");
 		//String[] re = model.tokenize_text("Rs. 109 Limited Time Domain Sale! Book Your Domain And Get Online Today.");
 		//String[] re = model.tokenize_text("Rs. 109\n\n  Limited Time \nDomain Sale! Book Your Domain    And \nGet Online Today.");
-		String[] re = model.tokenize_text("this is sumit. \n \n\n\n\n\n\n\n\n where are you.\n");
-		//String[] re = model.tokenize_text("this is sumit/..........  ..ahow are ......... adhsf");
-		//String[] re = model.tokenize_text("reQall, inc. is the name of the company.");
+		String[] re = model.tokenize_text("N.Y. is the biggest city of U.S.A. and Auckland is the biggest city of N.Z.");
 		/*Scanner sc=new Scanner(System.in);
 		System.out.println("Please enter the Line to pass");
 		String input = sc.nextLine();
@@ -67,7 +85,6 @@ public class Model {
 		for(Frag frag : data.frags){
 			probs = p0;
 			for(String feat:frag.features){		
-
 				probs *= getFeats(feat); 
 				//System.out.println("passinsg "+feat+" coming "+getFeats(feat)+" times "+i++);
 			}
