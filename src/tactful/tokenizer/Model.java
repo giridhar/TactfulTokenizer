@@ -53,7 +53,7 @@ public class Model {
 	}
 
 	public String[] tokenize_text(String text) throws IOException {
-		System.out.println("Given text is = "+text);
+		//System.out.println("Given text is = "+text);
 		Doc data = new Doc(text);
 		featurize(data);
 		classify(data);
@@ -110,8 +110,15 @@ public class Model {
 	// # * w2lower: logarithmic count of w2 occuring lowercased.
 	public void get_features(Frag frag, Model model) throws IOException {
 		
-		String w1 = frag.cleaned[frag.cleaned.length-1];
-		String w2 = frag.getNext();
+		String w1;
+		String w2;
+		if (frag.cleaned.length > 0) {
+			w1 = frag.cleaned[frag.cleaned.length - 1];
+			w2 = frag.getNext();
+		} else {
+			w1 = "";
+			w2 = "";
+		}
 		
 		List<String> features = new ArrayList<String>();
 		if (w1 != null){
